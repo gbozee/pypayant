@@ -25,6 +25,7 @@ class BasePayantAPI(object):
         if auth_key:
             self.auth_key = auth_key
         self.implementation = implementation
+        self.key = ""
 
     def _path(self, path):
         url_path = self._base_url.get(self.implementation)
@@ -78,3 +79,20 @@ class BasePayantAPI(object):
         if response.status_code in [200, 201]:
             return self._json_parser(response)
         response.raise_for_status()
+
+    def delete(self, reference_code):
+        url = self._path("{0}/{1}".format(self.key, reference_code))
+        return self._exec_request('DELETE', url)
+
+    def get(self, reference_code):
+        """
+        Get the details of an invoice with the reference_code provided.
+        :param reference_code:
+        :return:
+        """
+        url = self._path("{0}/{1}".format(self.key, reference_code))
+        return self._exec_request('GET', url)
+
+    def add(self, **kwargs):
+        url = self._path(self.key)
+        return self._exec_request('POST', url, data=kwargs)

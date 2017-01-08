@@ -1,14 +1,21 @@
 from __future__ import print_function  # (at top of module)
 from .base import BasePayantAPI
 
+
 class Client(BasePayantAPI):
+    def __init__(self, auth_key, **kwargs):
+        super(Client, self).__init__(auth_key, **kwargs)
+        self.key = "clients"
 
-    def __init__(self, auth_key):
-        super(Client, self).__init__(auth_key)
-        self.base_client_key = "clients"
-
-    def add(self, first_name, last_name, email, phone,
-            website=None, address=None, state=None, lga=None,
+    def add(self,
+            first_name,
+            last_name,
+            email,
+            phone,
+            website=None,
+            address=None,
+            state=None,
+            lga=None,
             company_name=None):
         """
 
@@ -24,8 +31,6 @@ class Client(BasePayantAPI):
         :param company_Name:
         :return:
         """
-        url = self._path(self.base_client_key)
-        print(url)
         request_data = {
             "company_name": company_name,
             "first_name": first_name,
@@ -37,16 +42,7 @@ class Client(BasePayantAPI):
             "state": state,
             "lga": lga
         }
-        return self._exec_request('POST', url, request_data)
-
-    def get(self, client_id):
-        """
-        Get details of a client with the id provided
-        :param client_id:
-        :return:
-        """
-        url = self._path("{0}/{1}".format(self.base_client_key, client_id))
-        return self._exec_request('GET', url)
+        return super(Client, self).add(**request_data)
 
     def edit(self,
              client_id,
@@ -73,7 +69,7 @@ class Client(BasePayantAPI):
         :param company_Name:
         :return:
         """
-        url = self._path("{0}/{1}".format(self.base_client_key, client_id))
+        url = self._path("{0}/{1}".format(self.key, client_id))
         request_data = {
             "company_name": company_Name,
             "first_name": first_name,
@@ -86,7 +82,3 @@ class Client(BasePayantAPI):
             "lga": lga
         }
         return self._exec_request('PUT', url, request_data)
-
-    def delete(self, client_id):
-        url = self._path("{0}/{1}".format(self.base_client_key, client_id))
-        return self._exec_request('DELETE', url)
